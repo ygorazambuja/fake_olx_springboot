@@ -2,6 +2,7 @@ package com.ufms.olx.domain.entities;
 
 import java.time.LocalDate;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 
 import com.ufms.olx.domain.enums.SituacaoPessoa;
@@ -21,6 +22,7 @@ import lombok.ToString;
 @ToString(callSuper = true)
 @Entity
 public class PessoaJuridica extends Pessoa {
+    @Column(unique = true)
     private String cnpj;
 
     @Builder(builderMethodName = "pessoaJuridica")
