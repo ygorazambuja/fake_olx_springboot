@@ -1,25 +1,21 @@
 package com.ufms.olx.domain.entities;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-
 import com.ufms.olx.domain.enums.StatusPedido;
-
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import javax.persistence.*;
+import java.math.BigDecimal;
+import java.time.LocalDate;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Builder
 public class Pedido {
 
     @Id
@@ -29,7 +25,9 @@ public class Pedido {
     private Long idPessoa;
     @Enumerated(EnumType.STRING)
     private StatusPedido statusPedido;
+    @DateTimeFormat
     private LocalDate dataCompra;
+    @DateTimeFormat
     private LocalDate dataEntrega;
     private BigDecimal percentualDesconto;
 }

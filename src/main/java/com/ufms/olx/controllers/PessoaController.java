@@ -28,4 +28,8 @@ public class PessoaController {
     return ResponseEntity.ok().body(pessoa);
   }
 
+  public ResponseEntity<?> alteraPessoa(@RequestBody Pessoa pessoa) {
+    return ResponseEntity.ok().body(pessoaService);
+  }
+
 }

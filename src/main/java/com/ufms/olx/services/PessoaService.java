@@ -40,4 +40,5 @@ public class PessoaService {
   public Pessoa buscaPorId(Long id) {
     return pessoaRepository.findById(id).orElseThrow();
   }
+
 }
