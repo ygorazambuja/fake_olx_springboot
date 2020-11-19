@@ -35,4 +35,10 @@ public class UsuarioController {
         Usuario usuario = usuarioService.buscaPorLogin(login);
         return ResponseEntity.ok().body(usuario);
     }
+
+    @PostMapping("/usuario/insereAdmin")
+    public ResponseEntity<?> insereAdmin(@RequestBody CriaUsuarioDto dto) {
+        var usuario = usuarioService.insereAdmin(dto);
+        return ResponseEntity.ok().body(usuario);
+    }
 }

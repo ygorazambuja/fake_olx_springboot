@@ -8,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequestMapping("/pessoa")
@@ -33,7 +32,7 @@ public class PessoaController {
         return ResponseEntity.ok().body(pessoaService);
     }
 
-    @DeleteMapping
+    @DeleteMapping("/{id}")
     public ResponseEntity<?> deletePessoa(@PathVariable Long id) {
         pessoaService.deletePessoa(id);
         return ResponseEntity.ok().body("");

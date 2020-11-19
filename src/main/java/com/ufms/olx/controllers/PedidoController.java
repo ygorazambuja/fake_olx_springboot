@@ -3,7 +3,6 @@ package com.ufms.olx.controllers;
 import com.ufms.olx.domain.dto.PedidoDTO.CriaPedidoDTO;
 import com.ufms.olx.domain.entities.Pedido;
 import com.ufms.olx.services.PedidoService;
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -27,7 +26,7 @@ public class PedidoController {
     }
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<?> getById(@PathVariable() Long id) {
+    public ResponseEntity<?> getById(@PathVariable Long id) {
         return ResponseEntity.ok().body(pedidoService.getById(id));
     }
 }

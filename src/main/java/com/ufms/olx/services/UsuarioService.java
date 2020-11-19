@@ -42,4 +42,16 @@ public class UsuarioService {
     public Usuario buscaPorLogin(String login) {
         return usuarioRepository.findUsuarioByLogin(login);
     }
+
+    public Usuario insereAdmin(CriaUsuarioDto dto) {
+        Pessoa pessoa = pessoaService.buscaPorId(dto.getPessoaId());
+        Usuario usuario = Usuario
+            .builder()
+            .login("admin")
+            .senha("admin")
+            .pessoa(pessoa)
+            .isAdministrador(true)
+            .build();
+        return usuarioRepository.save(usuario);
+    }
 }
