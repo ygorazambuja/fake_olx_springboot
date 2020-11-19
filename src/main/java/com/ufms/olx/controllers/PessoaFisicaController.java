@@ -3,23 +3,23 @@ package com.ufms.olx.controllers;
 import com.ufms.olx.domain.dto.PessoaDTO.CriaPessoaFisicaDto;
 import com.ufms.olx.domain.entities.PessoaFisica;
 import com.ufms.olx.services.PessoaFisicaService;
+import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
-
 @Controller
 @RequestMapping("/pessoaFisica")
 public class PessoaFisicaController {
-
     @Autowired
     PessoaFisicaService pessoaFisicaService;
 
     @PostMapping
     @ResponseBody
-    public ResponseEntity<?> inserePessoaFisica(@RequestBody @Valid CriaPessoaFisicaDto dto) {
+    public ResponseEntity<?> inserePessoaFisica(
+        @RequestBody @Valid CriaPessoaFisicaDto dto
+    ) {
         return ResponseEntity.ok().body(pessoaFisicaService.insere(dto));
     }
 
@@ -29,9 +29,8 @@ public class PessoaFisicaController {
         return ResponseEntity.ok().body(pessoa);
     }
 
-    @GetMapping()
+    @GetMapping
     public ResponseEntity<?> buscaTodos() {
         return ResponseEntity.ok().body(pessoaFisicaService.buscaTodos());
     }
-
 }
