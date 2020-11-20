@@ -29,4 +29,16 @@ public class PedidoController {
     public ResponseEntity<?> getById(@PathVariable Long id) {
         return ResponseEntity.ok().body(pedidoService.getById(id));
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> alteraPedido(@RequestBody Pedido pedido, @PathVariable Long id) {
+        Pedido pedidoAtualizado = pedidoService.updatePedido(id,  pedido);
+        return ResponseEntity.ok().body(pedidoAtualizado);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deletaPessoa(@PathVariable Long id) {
+        pedidoService.deletePedido(id);
+        return ResponseEntity.ok().body("");
+    }
 }
