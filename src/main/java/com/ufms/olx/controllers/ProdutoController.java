@@ -38,7 +38,7 @@ public class ProdutoController {
         return ResponseEntity.ok().body(produtoService.getById(id));
     }
 
-    @PutMapping(path  = "/{id}")
+    @PutMapping(path = "/{id}")
     public ResponseEntity<?> updateProduto(
         @PathVariable Long id,
         @RequestBody Produto produto
