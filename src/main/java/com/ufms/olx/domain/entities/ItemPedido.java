@@ -6,8 +6,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -15,6 +15,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@Builder
 public class ItemPedido {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -23,10 +24,10 @@ public class ItemPedido {
     @ManyToOne
     @JoinColumn(name = "pedido.id")
     private Pedido pedido;
-    
+
     @ManyToOne
     @JoinColumn(name = "produto.id")
     private Produto produto;
-    
+
     private Long quantidade;
 }
