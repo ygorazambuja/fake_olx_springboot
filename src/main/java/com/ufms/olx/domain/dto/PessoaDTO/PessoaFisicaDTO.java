@@ -17,7 +17,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class CriaPessoaFisicaDto {
+public class PessoaFisicaDTO {
     private Long id, idResponsavel;
 
     @Enumerated(EnumType.STRING)

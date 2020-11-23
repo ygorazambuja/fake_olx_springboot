@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class CriaUsuarioDto {
+public class UsuarioDTO {
     private boolean isAdminstador;
     private String login;
     private String senha;

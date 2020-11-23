@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class CriaPessoaJuridicaDto {
+public class PessoaJuridicaDTO {
     private Long id, idResponsavel;
 
     @Enumerated(EnumType.STRING)

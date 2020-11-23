@@ -1,40 +1,39 @@
 package com.ufms.olx.controllers;
 
-import com.ufms.olx.domain.dto.PessoaDTO.CriaPessoaDto;
+import com.ufms.olx.domain.dto.PessoaDTO.PessoaDTO;
 import com.ufms.olx.domain.entities.Pessoa;
 import com.ufms.olx.services.PessoaService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
-@RequestMapping("/pessoa")
-public class PessoaController {
-    @Autowired
-    private PessoaService pessoaService;
+@RequestMapping("/api/pessoa")
+public class PessoaController implements GenericController<Pessoa, PessoaDTO> {
+    private final PessoaService pessoaService;
 
+    public PessoaController(PessoaService pessoaService) {
+        this.pessoaService = pessoaService;
+    }
+
+    @Override
     @PostMapping
-    public ResponseEntity<?> insereFisicaOuJuridica(@RequestBody CriaPessoaDto dto) {
-        Pessoa pessoa = pessoaService.inserePessoaFisicaOuJuridica(dto);
+    public ResponseEntity<?> addEntity(@RequestBody PessoaDTO dto) {
+        Pessoa pessoa = pessoaService.insert(dto);
         return ResponseEntity.ok().body(pessoa);
     }
 
+    @Override
     @GetMapping("/{id}")
-    public ResponseEntity<?> buscaPorId(@PathVariable("id") Long id) {
-        Pessoa pessoa = pessoaService.buscaPorId(id);
+    public ResponseEntity<?> getEntityById(@PathVariable("id") Long id) {
+        Pessoa pessoa = pessoaService.getById(id);
         return ResponseEntity.ok().body(pessoa);
     }
 
-    @PutMapping
-    public ResponseEntity<?> alteraPessoa(@RequestBody Pessoa pessoa) {
-        return ResponseEntity.ok().body(pessoaService);
-    }
-
+    @Override
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deletePessoa(@PathVariable Long id) {
-        pessoaService.deletePessoa(id);
+    public ResponseEntity<?> removeEntity(@PathVariable Long id) {
+        pessoaService.delete(id);
         return ResponseEntity.ok().body("");
     }
 
@@ -42,5 +41,17 @@ public class PessoaController {
     public ResponseEntity<?> getPessoas() {
         var pessoas = pessoaService.getAll();
         return ResponseEntity.ok().body(pessoas);
+    }
+
+    @Override
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateEntity(Pessoa pessoa, Long id) {
+        Pessoa updatedPessoa = pessoaService.update(pessoa, id);
+        return ResponseEntity.ok().body(updatedPessoa);
+    }
+
+    @Override
+    public ResponseEntity<?> getAllEntities() {
+        return ResponseEntity.ok().body(pessoaService.getAll());
     }
 }

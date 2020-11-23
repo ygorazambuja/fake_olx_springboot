@@ -3,17 +3,8 @@ package com.ufms.olx.domain.entities;
 import com.ufms.olx.domain.enums.SituacaoPessoa;
 import com.ufms.olx.domain.enums.TipoPessoa;
 import java.time.LocalDate;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
-import javax.persistence.OneToOne;
+import java.time.Period;
+import javax.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -43,4 +34,12 @@ public abstract class Pessoa {
 
     @OneToOne(cascade = CascadeType.ALL)
     private Usuario usuario;
+
+    public boolean validaIdade() {
+        return Period.between(LocalDate.now(), this.dataNascimento).getYears() * -1 > 18;
+    }
+
+    public Integer getIdade() {
+        return Period.between(LocalDate.now(), this.dataNascimento).getYears() * -1;
+    }
 }

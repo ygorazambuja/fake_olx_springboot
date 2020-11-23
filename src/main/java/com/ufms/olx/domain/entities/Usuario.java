@@ -17,7 +17,7 @@ public class Usuario {
     @Column
     private Long id;
 
-    private boolean isAdministrador;
+    private boolean adminstrador;
 
     @Column(unique = true)
     private String login;

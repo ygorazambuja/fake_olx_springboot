@@ -1,28 +1,61 @@
 package com.ufms.olx.services;
 
-import com.ufms.olx.domain.dto.PessoaDTO.CriaPessoaDto;
-import com.ufms.olx.domain.dto.PessoaDTO.CriaPessoaFisicaDto;
-import com.ufms.olx.domain.dto.PessoaDTO.CriaPessoaJuridicaDto;
+import com.ufms.olx.domain.dto.PessoaDTO.PessoaDTO;
+import com.ufms.olx.domain.dto.PessoaDTO.PessoaFisicaDTO;
+import com.ufms.olx.domain.dto.PessoaDTO.PessoaJuridicaDTO;
 import com.ufms.olx.domain.entities.Pessoa;
 import com.ufms.olx.repository.PessoaRepository;
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class PessoaService {
-    @Autowired
-    PessoaFisicaService pessoaFisicaService;
+public class PessoaService implements GenericCRUDService<Pessoa, PessoaDTO> {
+    final PessoaFisicaService pessoaFisicaService;
 
-    @Autowired
-    PessoaJuricaService pessoaJuricaService;
+    final PessoaJuricaService pessoaJuricaService;
 
-    @Autowired
-    PessoaRepository pessoaRepository;
+    final PessoaRepository pessoaRepository;
 
-    public Pessoa inserePessoaFisicaOuJuridica(CriaPessoaDto dto) {
+    public PessoaService(
+        PessoaFisicaService pessoaFisicaService,
+        PessoaJuricaService pessoaJuricaService,
+        PessoaRepository pessoaRepository
+    ) {
+        this.pessoaFisicaService = pessoaFisicaService;
+        this.pessoaJuricaService = pessoaJuricaService;
+        this.pessoaRepository = pessoaRepository;
+    }
+
+    @Override
+    public Pessoa getById(Long id) {
+        return pessoaRepository.findById(id).orElseThrow();
+    }
+
+    @Override
+    public void delete(Long id) {
+        pessoaRepository.deleteById(id);
+    }
+
+    @Override
+    public Pessoa insert(PessoaDTO entity) {
+        return inserePessoaFisicaOuJuridica(entity);
+    }
+
+    @Override
+    public Pessoa update(Pessoa pessoa, Long id) {
+        return null;
+    }
+
+    @Override
+    public List<Pessoa> getAll() {
+        return pessoaRepository.findAll();
+    }
+
+    private Pessoa inserePessoaFisicaOuJuridica(PessoaDTO dto) {
         if (dto.getCpf() == null && dto.getRg() == null && !dto.getCnpj().isEmpty()) {
-            CriaPessoaJuridicaDto juridicaDto = CriaPessoaJuridicaDto
+            var juridicaDto = PessoaJuridicaDTO
                 .builder()
                 .apelido(dto.getApelido())
                 .cnpj(dto.getCnpj())
@@ -33,9 +66,21 @@ public class PessoaService {
                 .situacaoPessoa(dto.getSituacaoPessoa())
                 .tipoPessoa(dto.getTipoPessoa())
                 .build();
-            return pessoaJuricaService.insere(juridicaDto);
+
+            if (validaIdade(juridicaDto.getDataNascimento())) {
+                return pessoaJuricaService.insert(juridicaDto);
+            } else {
+                if (
+                    juridicaDto.getIdResponsavel() != null &&
+                    validaIdResponsavel(juridicaDto.getIdResponsavel())
+                ) {
+                    return pessoaJuricaService.insert(juridicaDto);
+                } else {
+                    return null;
+                }
+            }
         } else {
-            CriaPessoaFisicaDto fisicaDto = CriaPessoaFisicaDto
+            PessoaFisicaDTO fisicaDto = PessoaFisicaDTO
                 .builder()
                 .apelido(dto.getApelido())
                 .cpf(dto.getCpf())
@@ -47,19 +92,16 @@ public class PessoaService {
                 .nome(dto.getNome())
                 .tipoPessoa(dto.getTipoPessoa())
                 .build();
-            return pessoaFisicaService.insere(fisicaDto);
+            return pessoaFisicaService.insert(fisicaDto);
         }
     }
 
-    public Pessoa buscaPorId(Long id) {
-        return pessoaRepository.findById(id).orElseThrow();
+    private boolean validaIdade(LocalDate dataNascimento) {
+        return Period.between(LocalDate.now(), dataNascimento).getYears() * -1 > 18;
     }
 
-    public void deletePessoa(Long id) {
-        pessoaRepository.deleteById(id);
-    }
-
-    public List<Pessoa> getAll() {
-        return pessoaRepository.findAll();
+    private boolean validaIdResponsavel(Long id) {
+        var responsavel = pessoaRepository.findById(id).orElse(null);
+        return responsavel != null && validaIdade(responsavel.getDataNascimento());
     }
 }

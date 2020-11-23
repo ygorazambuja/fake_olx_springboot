@@ -4,10 +4,12 @@ import com.ufms.olx.domain.enums.SituacaoPessoa;
 import com.ufms.olx.domain.enums.TipoPessoa;
 import java.time.LocalDate;
 import javax.validation.constraints.NotEmpty;
+import lombok.Builder;
 import lombok.Data;
 
 @Data
-public class CriaPessoaDto {
+@Builder
+public class PessoaDTO {
     private Long id, idResponsavel;
     private TipoPessoa tipoPessoa;
     private SituacaoPessoa situacaoPessoa;

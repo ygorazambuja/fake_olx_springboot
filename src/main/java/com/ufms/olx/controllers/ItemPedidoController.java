@@ -3,54 +3,59 @@ package com.ufms.olx.controllers;
 import com.ufms.olx.domain.dto.ItemPedidoDTO.ItemPedidoDTO;
 import com.ufms.olx.domain.entities.ItemPedido;
 import com.ufms.olx.services.ItemPedidoService;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.apache.coyote.Response;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
-@RequestMapping(name = "/itemPedido")
+@RequestMapping("/api/itemPedido")
 public class ItemPedidoController
     implements GenericController<ItemPedido, ItemPedidoDTO> {
-    @Autowired
-    private ItemPedidoService itemPedidoService;
+    private final ItemPedidoService itemPedidoService;
+
+    public ItemPedidoController(ItemPedidoService itemPedidoService) {
+        this.itemPedidoService = itemPedidoService;
+    }
 
     @Override
     @PostMapping
     public ResponseEntity<?> addEntity(ItemPedidoDTO dto) {
-        // TODO Auto-generated method stub
-        return null;
+        return ResponseEntity.ok().body(itemPedidoService.insert(dto));
     }
 
     @Override
-    @DeleteMapping(value = "/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<?> removeEntity(Long id) {
-        // TODO Auto-generated method stub
-        return null;
+        itemPedidoService.delete(id);
+        return ResponseEntity.ok().body("");
     }
 
     @Override
-    @PutMapping(value = "/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<?> updateEntity(ItemPedido entity, Long id) {
-        // TODO Auto-generated method stub
-        return null;
+        return ResponseEntity.ok().body(itemPedidoService.update(entity, id));
     }
 
     @Override
     @GetMapping
     public ResponseEntity<?> getAllEntities() {
-        // TODO Auto-generated method stub
-        return null;
+        return ResponseEntity.ok(itemPedidoService.getAll());
     }
 
     @Override
-    @GetMapping(value = "/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<?> getEntityById(Long id) {
-        // TODO Auto-generated method stub
-        return null;
+        return ResponseEntity.ok().body(itemPedidoService.getById(id));
+    }
+
+    @GetMapping("/usuario")
+    public ResponseEntity<?> getItemPedidoPorUsuario(
+        @RequestHeader("login") String login,
+        @RequestHeader("senha") String senha
+    ) {
+        return ResponseEntity
+            .ok()
+            .body(itemPedidoService.getItemPedidoPorUsuario(login, senha));
     }
 }

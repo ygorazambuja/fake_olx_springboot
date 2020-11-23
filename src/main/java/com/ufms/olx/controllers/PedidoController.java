@@ -1,47 +1,67 @@
 package com.ufms.olx.controllers;
 
-import com.ufms.olx.domain.dto.PedidoDTO.CriaPedidoDTO;
+import com.ufms.olx.domain.dto.PedidoDTO.PedidoDTO;
 import com.ufms.olx.domain.entities.Pedido;
 import com.ufms.olx.services.PedidoService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
-@RequestMapping("/pedido")
-public class PedidoController {
-    @Autowired
-    private PedidoService pedidoService;
+@RequestMapping("/api/pedido")
+public class PedidoController implements GenericController<Pedido, PedidoDTO> {
+    private final PedidoService pedidoService;
 
+    public PedidoController(PedidoService pedidoService) {
+        this.pedidoService = pedidoService;
+    }
+
+    @Override
     @PostMapping
-    public ResponseEntity<?> insere(@RequestBody CriaPedidoDTO dto) {
-        Pedido pedido = pedidoService.insere(dto);
+    public ResponseEntity<?> addEntity(@RequestBody PedidoDTO dto) {
+        Pedido pedido = pedidoService.insert(dto);
         return ResponseEntity.ok().body(pedido);
     }
 
+    @Override
     @GetMapping
-    public ResponseEntity<?> getAll() {
+    public ResponseEntity<?> getAllEntities() {
         return ResponseEntity.ok().body(pedidoService.getAll());
     }
 
+    @Override
     @GetMapping(value = "/{id}")
-    public ResponseEntity<?> getById(@PathVariable Long id) {
+    public ResponseEntity<?> getEntityById(@PathVariable Long id) {
         return ResponseEntity.ok().body(pedidoService.getById(id));
     }
 
+    @Override
     @PutMapping("/{id}")
-    public ResponseEntity<?> alteraPedido(
+    public ResponseEntity<?> updateEntity(
         @RequestBody Pedido pedido,
         @PathVariable Long id
     ) {
-        Pedido pedidoAtualizado = pedidoService.updatePedido(id, pedido);
+        Pedido pedidoAtualizado = pedidoService.update(pedido, id);
         return ResponseEntity.ok().body(pedidoAtualizado);
     }
 
+    @Override
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deletaPessoa(@PathVariable Long id) {
-        pedidoService.deletePedido(id);
+    public ResponseEntity<?> removeEntity(@PathVariable Long id) {
+        pedidoService.delete(id);
         return ResponseEntity.ok().body("");
+    }
+
+    @GetMapping("/usuario")
+    public ResponseEntity<?> getPedidoPorUsuario(
+        @RequestHeader("login") String login,
+        @RequestHeader("senha") String senha
+    ) {
+        return ResponseEntity.ok().body(pedidoService.getPedidoPorUsuario(login, senha));
+    }
+
+    @GetMapping("/pessoa/{id}")
+    public ResponseEntity<?> getPedidoPorPessoa(@PathVariable Long id) {
+        return ResponseEntity.ok().body(pedidoService.getPedidoPorPessoa(id));
     }
 }

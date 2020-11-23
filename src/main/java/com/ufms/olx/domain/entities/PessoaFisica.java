@@ -5,12 +5,7 @@ import com.ufms.olx.domain.enums.TipoPessoa;
 import java.time.LocalDate;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 @Data
 @EqualsAndHashCode(callSuper = true)

@@ -4,19 +4,31 @@ import com.ufms.olx.domain.dto.ItemPedidoDTO.ItemPedidoDTO;
 import com.ufms.olx.domain.entities.ItemPedido;
 import com.ufms.olx.domain.entities.Pedido;
 import com.ufms.olx.domain.entities.Produto;
+import com.ufms.olx.domain.entities.Usuario;
 import com.ufms.olx.repository.ItemPedidoRepository;
 import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+@Service
 public class ItemPedidoService implements GenericCRUDService<ItemPedido, ItemPedidoDTO> {
-    @Autowired
-    private ItemPedidoRepository repository;
+    private final ItemPedidoRepository itemPedidoRepository;
 
-    @Autowired
-    private PedidoService pedidoService;
+    private final PedidoService pedidoService;
 
-    @Autowired
-    private ProdutoService produtoService;
+    private final ProdutoService produtoService;
+    private final UsuarioService usuarioService;
+
+    public ItemPedidoService(
+        ItemPedidoRepository repository,
+        PedidoService pedidoService,
+        ProdutoService produtoService,
+        UsuarioService usuarioService
+    ) {
+        this.itemPedidoRepository = repository;
+        this.pedidoService = pedidoService;
+        this.produtoService = produtoService;
+        this.usuarioService = usuarioService;
+    }
 
     @Override
     public ItemPedido insert(ItemPedidoDTO itemPedidoDto) {
@@ -30,27 +42,33 @@ public class ItemPedidoService implements GenericCRUDService<ItemPedido, ItemPed
             .quantidade(itemPedidoDto.getQuantidade())
             .build();
 
-        return repository.save(itemPedido);
+        return itemPedidoRepository.save(itemPedido);
     }
 
     @Override
     public ItemPedido update(ItemPedido itemPedido, Long id) {
-        // TODO Auto-generated method stub
-        return null;
+        var backup = this.getById(id);
+        itemPedido.setId(backup.getId());
+        return itemPedidoRepository.save(itemPedido);
     }
 
     @Override
     public ItemPedido getById(Long id) {
-        return repository.findById(id).orElseThrow(() -> new Error(""));
+        return itemPedidoRepository.findById(id).orElseThrow(() -> new Error(""));
     }
 
     @Override
     public List<ItemPedido> getAll() {
-        return repository.findAll();
+        return itemPedidoRepository.findAll();
     }
 
     @Override
     public void delete(Long id) {
-        repository.deleteById(id);
+        itemPedidoRepository.deleteById(id);
+    }
+
+    public List<ItemPedido> getItemPedidoPorUsuario(String login, String senha) {
+        Usuario usuario = usuarioService.login(login, senha);
+        return itemPedidoRepository.getAllByPedido_IdPessoa(usuario.getPessoa().getId());
     }
 }

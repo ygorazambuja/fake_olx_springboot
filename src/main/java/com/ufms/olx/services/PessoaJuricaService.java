@@ -1,17 +1,22 @@
 package com.ufms.olx.services;
 
-import com.ufms.olx.domain.dto.PessoaDTO.CriaPessoaJuridicaDto;
+import com.ufms.olx.domain.dto.PessoaDTO.PessoaJuridicaDTO;
 import com.ufms.olx.domain.entities.PessoaJuridica;
 import com.ufms.olx.repository.PessoaJuridicaRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.List;
 import org.springframework.stereotype.Service;
 
 @Service
-public class PessoaJuricaService {
-    @Autowired
-    private PessoaJuridicaRepository repository;
+public class PessoaJuricaService
+    implements GenericCRUDService<PessoaJuridica, PessoaJuridicaDTO> {
+    private final PessoaJuridicaRepository repository;
 
-    public PessoaJuridica insere(CriaPessoaJuridicaDto dto) {
+    public PessoaJuricaService(PessoaJuridicaRepository repository) {
+        this.repository = repository;
+    }
+
+    @Override
+    public PessoaJuridica insert(PessoaJuridicaDTO dto) {
         PessoaJuridica pessoa = PessoaJuridica
             .pessoaJuridica()
             .apelido(dto.getApelido())
@@ -26,7 +31,23 @@ public class PessoaJuricaService {
         return repository.save(pessoa);
     }
 
-    public PessoaJuridica buscaPorId(Long id) {
+    @Override
+    public PessoaJuridica update(PessoaJuridica pessoaJuridica, Long id) {
+        return null;
+    }
+
+    @Override
+    public PessoaJuridica getById(Long id) {
         return repository.findById(id).orElseThrow();
+    }
+
+    @Override
+    public List<PessoaJuridica> getAll() {
+        return repository.findAll();
+    }
+
+    @Override
+    public void delete(Long id) {
+        repository.deleteById(id);
     }
 }
